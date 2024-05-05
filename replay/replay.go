@@ -21,10 +21,16 @@ func newReplayCommand(command history.Command) *exec.Cmd {
 func Replay(commands []history.Command) {
 	for _, command := range commands {
 		replayCmd := newReplayCommand(command)
-		err := replayCmd.Run()
+		err := replayCmd.Start()
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
+		}
+
+		if err := replayCmd.Wait(); err != nil {
+			if exiterr, ok := err.(*exec.ExitError); ok && exiterr.ExitCode() != 0 {
+				os.Exit(0)
+			}
 		}
 	}
 }
