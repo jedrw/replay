@@ -44,14 +44,12 @@ func readHistory() ([]string, error) {
 }
 
 func parseHistory(historyLines []string) (CommandHistory, error) {
-	slices.Reverse(historyLines)
 	var commandHistory CommandHistory
-	numCommands := len(historyLines)
 	for i, line := range historyLines {
 		commandHistory = append(
 			CommandHistory{
 				Command{
-					Index:   numCommands - i,
+					Index:   i,
 					Command: line,
 				},
 			},
@@ -59,6 +57,7 @@ func parseHistory(historyLines []string) (CommandHistory, error) {
 		)
 	}
 
+	slices.Reverse(commandHistory)
 	return commandHistory, nil
 }
 
