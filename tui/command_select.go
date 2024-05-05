@@ -10,9 +10,8 @@ import (
 )
 
 const (
-	INDEXCOLUMN   = iota
-	COMMANDCOLUMN = iota
 	ORDERCOLUMN   = iota
+	COMMANDCOLUMN = iota
 )
 
 func newCommandSelect(replayTui *replayTui) *tview.Table {
@@ -145,7 +144,7 @@ func (replayTui *replayTui) toggleSelected(commandCell *tview.TableCell, orderCe
 }
 
 func (replayTui *replayTui) populateCommandTable(commands []history.Command) {
-	for column, header := range []string{"Index", "Command", "Order"} {
+	for column, header := range []string{"Order", "Command"} {
 		headerCell := tview.NewTableCell(header).SetSelectable(false)
 		headerCell.SetTextColor(tcell.ColorSteelBlue)
 		headerCell.SetStyle(tcell.Style.Attributes(headerCell.Style, tcell.AttrBold))
@@ -153,13 +152,9 @@ func (replayTui *replayTui) populateCommandTable(commands []history.Command) {
 	}
 
 	for row, command := range commands {
-		indexCell := tview.NewTableCell(fmt.Sprint(command.Index))
-		indexCell.SetSelectable(false)
-		replayTui.commandSelect.SetCell(row+1, 0, indexCell)
-
 		commandCell := tview.NewTableCell(fmt.Sprint(command.Command))
 		commandCell.SetReference(command)
-		replayTui.commandSelect.SetCell(row+1, 1, commandCell)
+		replayTui.commandSelect.SetCell(row+1, COMMANDCOLUMN, commandCell)
 
 		orderCell := tview.NewTableCell("").SetReference(0)
 		selected, selectedCommand := replayTui.commandInSelectedList(command)
@@ -172,6 +167,6 @@ func (replayTui *replayTui) populateCommandTable(commands []history.Command) {
 		}
 
 		orderCell.SetSelectable(false)
-		replayTui.commandSelect.SetCell(row+1, 2, orderCell)
+		replayTui.commandSelect.SetCell(row+1, ORDERCOLUMN, orderCell)
 	}
 }
