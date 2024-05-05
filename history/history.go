@@ -26,8 +26,7 @@ func readHistory() ([]string, error) {
 		return nil, err
 	}
 
-	shell := GetShell()
-	historyFile, err := os.Open(path.Join(homedir, fmt.Sprintf(".%s_history", shell)))
+	historyFile, err := os.Open(path.Join(homedir, fmt.Sprintf(".%s_history", GetShell())))
 	if err != nil {
 		return nil, err
 	}

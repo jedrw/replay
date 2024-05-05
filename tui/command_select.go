@@ -16,7 +16,8 @@ const (
 
 func newCommandSelect(replayTui *replayTui) *tview.Table {
 	commandSelect := tview.NewTable()
-	commandSelect.SetBorder(true).SetTitle(" Select ").SetBorderPadding(0, 0, 1, 1)
+	commandSelect.SetTitle(" Select ").SetTitleAlign(tview.AlignLeft)
+	commandSelect.SetBorder(true).SetBorderPadding(0, 0, 1, 1)
 	commandSelect.SetBackgroundColor(tcell.ColorDefault)
 	commandSelect.SetFixed(1, 0)
 	commandSelect.SetSelectable(true, false).SetSeparator(tview.Borders.Vertical)
@@ -25,7 +26,7 @@ func newCommandSelect(replayTui *replayTui) *tview.Table {
 		commandCell := commandSelect.GetCell(row, COMMANDCOLUMN)
 		orderCell := commandSelect.GetCell(row, ORDERCOLUMN)
 		replayTui.toggleSelected(commandCell, orderCell)
-		updatePreview(replayTui)
+		replayTui.updatePreview()
 	})
 
 	commandSelect.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
@@ -78,7 +79,7 @@ func newCommandSelect(replayTui *replayTui) *tview.Table {
 					replayTui.selectCommand(commandCell, orderCell)
 				}
 
-				updatePreview(replayTui)
+				replayTui.updatePreview()
 			}
 			return nil
 		} else {
@@ -145,7 +146,7 @@ func (replayTui *replayTui) toggleSelected(commandCell *tview.TableCell, orderCe
 func (replayTui *replayTui) populateCommandTable(commands []history.Command) {
 	for column, header := range []string{"Order", "Command"} {
 		headerCell := tview.NewTableCell(header).SetSelectable(false)
-		headerCell.SetTextColor(tcell.ColorSteelBlue)
+		headerCell.SetTextColor(altColour)
 		headerCell.SetStyle(tcell.Style.Attributes(headerCell.Style, tcell.AttrBold))
 		replayTui.commandSelect.SetCell(0, column, headerCell)
 	}

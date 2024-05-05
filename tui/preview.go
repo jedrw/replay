@@ -7,13 +7,14 @@ import (
 
 func newPreview() *tview.TextView {
 	preview := tview.NewTextView()
-	preview.SetBorder(true).SetTitle(" Preview ").SetBorderPadding(0, 0, 1, 1)
+	preview.SetTitle(" Preview ").SetTitleAlign(tview.AlignLeft)
+	preview.SetBorder(true).SetBorderPadding(0, 0, 1, 1)
 	preview.SetBackgroundColor(tcell.ColorDefault)
 
 	return preview
 }
 
-func updatePreview(replayTui *replayTui) {
+func (replayTui *replayTui) updatePreview() {
 	commands := make([]command, len(replayTui.selected))
 	copy(commands, replayTui.selected)
 

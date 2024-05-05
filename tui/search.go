@@ -10,7 +10,8 @@ import (
 
 func newSearch(replayTui *replayTui) *tview.InputField {
 	search := tview.NewInputField()
-	search.SetBorder(true).SetTitle(" Search ").SetBorderPadding(0, 0, 1, 1)
+	search.SetTitle(" Search ").SetTitleAlign(tview.AlignLeft)
+	search.SetBorder(true).SetBorderPadding(0, 0, 1, 1)
 	search.SetBackgroundColor(tcell.ColorDefault)
 	search.SetFieldStyle(tcell.StyleDefault)
 

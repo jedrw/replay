@@ -18,7 +18,7 @@ type replayTui struct {
 	app    *tview.Application
 	layout *tview.Flex
 
-	header        *tview.TextView
+	footer        *tview.TextView
 	search        *tview.InputField
 	commandSelect *tview.Table
 	preview       *tview.TextView
@@ -37,9 +37,6 @@ func (replayTui *replayTui) Run() error {
 	replayTui.layout.SetBorder(true).SetBorderColor(tcell.ColorBlack).SetTitle(" REPLAY ")
 	replayTui.layout.SetBackgroundColor(tcell.ColorDefault)
 
-	replayTui.header = NewHeader()
-	replayTui.layout.AddItem(replayTui.header, 1, 0, false)
-
 	replayTui.search = newSearch(replayTui)
 	replayTui.layout.AddItem(replayTui.search, 3, 0, false)
 
@@ -48,6 +45,9 @@ func (replayTui *replayTui) Run() error {
 
 	replayTui.preview = newPreview()
 	replayTui.layout.AddItem(replayTui.preview, 0, 1, false)
+
+	replayTui.footer = NewFooter()
+	replayTui.layout.AddItem(replayTui.footer, 1, 0, false)
 
 	var err error
 	replayTui.history, err = history.GetHistory()
