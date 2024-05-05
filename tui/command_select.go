@@ -9,6 +9,12 @@ import (
 	"github.com/rivo/tview"
 )
 
+const (
+	indexCol   = iota
+	commandCol = iota
+	orderCol   = iota
+)
+
 func newCommandSelect(replayTui *replayTui) *tview.Table {
 	commandSelect := tview.NewTable()
 	commandSelect.SetBorder(true)
@@ -24,8 +30,8 @@ func newCommandSelect(replayTui *replayTui) *tview.Table {
 	}
 
 	commandSelect.SetSelectedFunc(func(row, col int) {
-		commandCell := commandSelect.GetCell(row, col)
-		orderCell := commandSelect.GetCell(row, col+1)
+		commandCell := commandSelect.GetCell(row, commandCol)
+		orderCell := commandSelect.GetCell(row, orderCol)
 		replayTui.toggleSelected(commandCell, orderCell)
 
 		updatePreview(replayTui)
@@ -39,56 +45,56 @@ func newCommandSelect(replayTui *replayTui) *tview.Table {
 			replay.Run()
 		}
 
-		switch event.Rune() - 48 {
+		switch eventRuneToNumberKey(event) {
 		case 1, 2, 3, 4, 5, 6, 7, 8, 9:
-			order := int(event.Rune() - 48)
-
+			order := eventRuneToNumberKey(event)
 			// Check for another command with same order
-			for r := 1; r < commandSelect.GetRowCount(); r++ {
-				commandCell := commandSelect.GetCell(r, 1)
-				orderCell := commandSelect.GetCell(r, 2)
-				if orderCell.Reference.(int) == order {
+			for _, command := range replayTui.selected {
+				if command.order == order {
+					commandCell := commandSelect.GetCell(command.command.Index, commandCol)
+					orderCell := commandSelect.GetCell(command.command.Index, orderCol)
 					orderCell.SetText("").SetReference(0)
-					replayTui.toggleSelected(commandCell, orderCell)
+					replayTui.deselectCommand(commandCell, orderCell)
 				}
 			}
 
 			row, _ := commandSelect.GetSelection()
-			commandCell := commandSelect.GetCell(row, 1)
-			orderCell := commandSelect.GetCell(row, 2)
+			commandCell := commandSelect.GetCell(row, commandCol)
+			orderCell := commandSelect.GetCell(row, orderCol)
+			orderCell.SetText(fmt.Sprint(order)).SetReference(order)
 
-			// Set order on selected command
+			// Set order on already selected command
 			if isSelected(commandCell) {
 				for i, command := range replayTui.selected {
 					if command.command.Index == commandCell.Reference.(history.Command).Index {
 						replayTui.selected[i].order = order
-						orderCell.SetText(fmt.Sprint(order)).SetReference(order)
-						updatePreview(replayTui)
-						return event
 					}
 				}
+			} else {
+				replayTui.selectCommand(commandCell, orderCell)
 			}
 
-			orderCell.SetText(fmt.Sprint(order)).SetReference(order)
-			selectCommand(commandCell, orderCell, replayTui)
+			updatePreview(replayTui)
 		}
-
-		updatePreview(replayTui)
 		return event
 	})
 
 	commandSelect.SetFocusFunc(func() {
-		commandSelect.Select(commandSelect.GetRowCount()-1, 0)
+		commandSelect.Select(commandSelect.GetRowCount()-1, commandCol)
 	})
 
 	return commandSelect
+}
+
+func eventRuneToNumberKey(event *tcell.EventKey) int {
+	return int(event.Rune() - '0')
 }
 
 func isSelected(commandCell *tview.TableCell) bool {
 	return commandCell.Style == selectedStyle
 }
 
-func selectCommand(commandCell, orderCell *tview.TableCell, replayTui *replayTui) {
+func (replayTui *replayTui) selectCommand(commandCell, orderCell *tview.TableCell) {
 	commandCell.SetStyle(selectedStyle)
 	replayTui.selected = append(
 		replayTui.selected,
@@ -99,7 +105,7 @@ func selectCommand(commandCell, orderCell *tview.TableCell, replayTui *replayTui
 	)
 }
 
-func deselectCommand(commandCell, orderCell *tview.TableCell, replayTui *replayTui) {
+func (replayTui *replayTui) deselectCommand(commandCell, orderCell *tview.TableCell) {
 	commandCell.SetStyle(unselectedStyle)
 	orderCell.SetText("").SetReference(0)
 	for i, command := range replayTui.selected {
@@ -111,8 +117,8 @@ func deselectCommand(commandCell, orderCell *tview.TableCell, replayTui *replayT
 
 func (replayTui *replayTui) toggleSelected(commandCell *tview.TableCell, orderCell *tview.TableCell) {
 	if isSelected(commandCell) {
-		deselectCommand(commandCell, orderCell, replayTui)
+		replayTui.deselectCommand(commandCell, orderCell)
 	} else {
-		selectCommand(commandCell, orderCell, replayTui)
+		replayTui.selectCommand(commandCell, orderCell)
 	}
 }
