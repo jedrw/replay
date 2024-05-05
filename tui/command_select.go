@@ -40,7 +40,7 @@ func newCommandSelect(replayTui *replayTui) *tview.Table {
 		} else if event.Key() == tcell.KeyEsc {
 			replayTui.app.Stop()
 			return nil
-		} else if number := eventRuneToNumberKey(event); 1 <= number && number <= 9 {
+		} else if number := eventRuneToNumberKey(event); 1 <= number && number <= 9 && event.Modifiers() == tcell.ModAlt {
 			switch eventRuneToNumberKey(event) {
 			case 1, 2, 3, 4, 5, 6, 7, 8, 9:
 				order := eventRuneToNumberKey(event)
