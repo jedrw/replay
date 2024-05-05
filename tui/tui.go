@@ -46,18 +46,18 @@ func (replayTui *replayTui) Run() error {
 	}
 
 	for row, command := range history {
-		numberCell := tview.NewTableCell(fmt.Sprint(command.Number))
-		numberCell.SetSelectable(false)
-		replayTui.commandSelect.SetCell(row, 0, numberCell)
+		indexCell := tview.NewTableCell(fmt.Sprint(command.Index))
+		indexCell.SetSelectable(false)
+		replayTui.commandSelect.SetCell(row+1, 0, indexCell)
 
 		commandCell := tview.NewTableCell(fmt.Sprint(command.Command))
 		commandCell.SetReference(command)
-		replayTui.commandSelect.SetCell(row, 1, commandCell)
+		replayTui.commandSelect.SetCell(row+1, 1, commandCell)
 
 		orderCell := tview.NewTableCell("")
 		orderCell.SetSelectable(false)
 		orderCell.SetReference(0)
-		replayTui.commandSelect.SetCell(row, 2, orderCell)
+		replayTui.commandSelect.SetCell(row+1, 2, orderCell)
 	}
 
 	replayTui.app.SetRoot(replayTui.layout, true)

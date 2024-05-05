@@ -23,7 +23,7 @@ func sortCommands(commands []command) []history.Command {
 	})
 
 	slices.SortFunc(remainingCommands, func(a, b history.Command) int {
-		return cmp.Compare(a.Number, b.Number)
+		return cmp.Compare(a.Index, b.Index)
 	})
 
 	var commandList []history.Command

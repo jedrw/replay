@@ -7,7 +7,7 @@ import (
 
 func newPreview() *tview.TextView {
 	preview := tview.NewTextView()
-	preview.SetBorder(true)
+	preview.SetBorder(true).SetTitle(" Preview ")
 	preview.SetBackgroundColor(tcell.ColorDefault)
 
 	return preview

@@ -9,11 +9,16 @@ import (
 )
 
 type Command struct {
-	Number  int
+	Index   int
 	Command string
 }
 
 type CommandHistory []Command
+
+func GetShell() string {
+	shellBin := os.Getenv("SHELL")
+	return path.Base(shellBin)
+}
 
 func readHistory() ([]string, error) {
 	homedir, err := os.UserHomeDir()
@@ -21,9 +26,7 @@ func readHistory() ([]string, error) {
 		return nil, err
 	}
 
-	shellBin := os.Getenv("SHELL")
-	shell := path.Base(shellBin)
-
+	shell := GetShell()
 	historyFile, err := os.Open(path.Join(homedir, fmt.Sprintf(".%s_history", shell)))
 	if err != nil {
 		return nil, err
@@ -48,7 +51,7 @@ func parseHistory(historyLines []string) (CommandHistory, error) {
 		commandHistory = append(
 			CommandHistory{
 				Command{
-					Number:  numCommands - i - 1,
+					Index:   numCommands - i,
 					Command: line,
 				},
 			},
