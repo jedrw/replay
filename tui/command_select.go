@@ -31,9 +31,8 @@ func newCommandSelect(replayTui *replayTui) *tview.Table {
 	commandSelect.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		if event.Modifiers() == tcell.ModAlt && event.Key() == tcell.KeyEnter {
 			commands := sortCommands(replayTui.selected)
-			replay := replay.NewReplay(commands)
 			replayTui.app.Stop()
-			replay.Run()
+			replay.Replay(commands)
 			return nil
 		} else if event.Key() == tcell.KeyEnter || event.Key() == tcell.KeyUp || event.Key() == tcell.KeyDown || event.Key() == tcell.KeyLeft || event.Key() == tcell.KeyRight {
 			return event
