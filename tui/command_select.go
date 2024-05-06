@@ -35,7 +35,7 @@ func newCommandSelect(replayTui *replayTui) *tview.Table {
 			replayTui.app.Stop()
 			replay.Replay(commands)
 			return nil
-		} else if event.Key() == tcell.KeyEnter || event.Key() == tcell.KeyUp || event.Key() == tcell.KeyDown || event.Key() == tcell.KeyLeft || event.Key() == tcell.KeyRight {
+		} else if event.Key() == tcell.KeyEnter || event.Key() == tcell.KeyUp || event.Key() == tcell.KeyDown {
 			return event
 		} else if event.Key() == tcell.KeyEsc {
 			replayTui.app.Stop()
@@ -83,14 +83,8 @@ func newCommandSelect(replayTui *replayTui) *tview.Table {
 			}
 			return nil
 		} else {
-			handleSearchInput := replayTui.search.InputHandler()
-			handleSearchInput(event, nil)
-			return nil
+			return event
 		}
-	})
-
-	commandSelect.SetFocusFunc(func() {
-		commandSelect.Select(commandSelect.GetRowCount()-1, COMMANDCOLUMN)
 	})
 
 	return commandSelect
@@ -169,4 +163,6 @@ func (replayTui *replayTui) populateCommandTable(commands []history.Command) {
 		orderCell.SetSelectable(false)
 		replayTui.commandSelect.SetCell(row+1, ORDERCOLUMN, orderCell)
 	}
+
+	replayTui.commandSelect.Select(replayTui.commandSelect.GetRowCount()-1, COMMANDCOLUMN)
 }

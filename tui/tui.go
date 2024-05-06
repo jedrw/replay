@@ -41,7 +41,7 @@ func (replayTui *replayTui) Run() error {
 	replayTui.layout.AddItem(replayTui.search, 3, 0, false)
 
 	replayTui.commandSelect = newCommandSelect(replayTui)
-	replayTui.layout.AddItem(replayTui.commandSelect, 0, 1, true)
+	replayTui.layout.AddItem(replayTui.commandSelect, 0, 1, false)
 
 	replayTui.preview = newPreview()
 	replayTui.layout.AddItem(replayTui.preview, 0, 1, false)
@@ -57,7 +57,37 @@ func (replayTui *replayTui) Run() error {
 	}
 
 	replayTui.populateCommandTable(replayTui.history)
+
+	replayTui.app.SetInputCapture(replayTui.inputHandler())
 	replayTui.app.SetRoot(replayTui.layout, true)
 
 	return replayTui.app.Run()
+}
+
+func isCommandSelectInput(event *tcell.EventKey) bool {
+	if (event.Modifiers() == tcell.ModAlt && event.Key() == tcell.KeyEnter) ||
+		(event.Key() == tcell.KeyEnter || event.Key() == tcell.KeyUp || event.Key() == tcell.KeyDown || event.Key() == tcell.KeyLeft || event.Key() == tcell.KeyRight) {
+		return true
+	} else if number := eventRuneToNumberKey(event); 1 <= number && number <= 9 && event.Modifiers() == tcell.ModAlt {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (replayTui *replayTui) inputHandler() func(event *tcell.EventKey) *tcell.EventKey {
+	return func(event *tcell.EventKey) *tcell.EventKey {
+		if event.Key() == tcell.KeyEsc {
+			replayTui.app.Stop()
+			return nil
+		} else if isCommandSelectInput(event) {
+			handleCommandSelectInput := replayTui.commandSelect.InputHandler()
+			handleCommandSelectInput(event, nil)
+			return nil
+		} else {
+			handleSearchInput := replayTui.search.InputHandler()
+			handleSearchInput(event, nil)
+			return nil
+		}
+	}
 }

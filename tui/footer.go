@@ -10,7 +10,7 @@ func NewFooter() *tview.TextView {
 	footer.SetTitle("REPLAY")
 	footer.SetBackgroundColor(tcell.ColorDefault)
 
-	footer.SetText("Move <Up|Down|Left|Right>	Select <Enter>	Order <Alt+[1-9]>	Search <ASCII>	Replay <Alt+Enter>")
+	footer.SetText("Navigate <Up|Down>	Select <Enter>	Order <Alt+[1-9]>	Search <ASCII>	Replay <Alt+Enter>")
 	footer.SetTextAlign(tview.AlignCenter).SetTextColor(altColour)
 
 	return footer
