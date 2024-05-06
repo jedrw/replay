@@ -7,9 +7,8 @@ Download and install the [latest release](https://github.com/lupinelab/replay/re
 
 ### From Source
 ```bash
-go install github.com/lupinelab/replay
+go install github.com/lupinelab/replay@latest
 ```
-
 
 ### Build from source
 ```bash
