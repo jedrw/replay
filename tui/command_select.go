@@ -99,9 +99,9 @@ func isSelected(commandCell *tview.TableCell) bool {
 }
 
 func (replayTui *replayTui) commandInSelectedList(command history.Command) (bool, *command) {
-	for _, selectCommand := range replayTui.selected {
-		if selectCommand.command.Index == command.Index {
-			return true, &selectCommand
+	for _, selectedCommand := range replayTui.selected {
+		if selectedCommand.command.Index == command.Index {
+			return true, &selectedCommand
 		}
 	}
 

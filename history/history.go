@@ -3,9 +3,9 @@ package history
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"path"
-	"slices"
 )
 
 type Command struct {
@@ -20,51 +20,41 @@ func GetShell() string {
 	return path.Base(shellBin)
 }
 
-func readHistory() ([]string, error) {
+func historyFilePath() string {
 	homedir, err := os.UserHomeDir()
 	if err != nil {
-		return nil, err
+		fmt.Printf("Could not find history file path: %s", err)
 	}
 
-	historyFile, err := os.Open(path.Join(homedir, fmt.Sprintf(".%s_history", GetShell())))
-	if err != nil {
-		return nil, err
-	}
-
-	defer historyFile.Close()
-
-	var historyLines []string
-	scanner := bufio.NewScanner(historyFile)
-	for scanner.Scan() {
-		historyLines = append(historyLines, scanner.Text())
-	}
-
-	return historyLines, scanner.Err()
+	return path.Join(homedir, fmt.Sprintf(".%s_history", GetShell()))
 }
 
-func parseHistory(historyLines []string) (CommandHistory, error) {
+func getHistoryFile(path string) (*os.File, error) {
+	return os.Open(path)
+}
+
+func parseHistory(historyFile io.Reader) (CommandHistory, error) {
 	var commandHistory CommandHistory
-	for i, line := range historyLines {
+	scanner := bufio.NewScanner(historyFile)
+	for i := 0; scanner.Scan(); i++ {
 		commandHistory = append(
-			CommandHistory{
-				Command{
-					Index:   i,
-					Command: line,
-				},
+			commandHistory,
+			Command{
+				Index:   i,
+				Command: scanner.Text(),
 			},
-			commandHistory...,
 		)
 	}
 
-	slices.Reverse(commandHistory)
 	return commandHistory, nil
 }
 
 func GetHistory() (CommandHistory, error) {
-	historyBytes, err := readHistory()
+	historyFile, err := getHistoryFile(historyFilePath())
 	if err != nil {
 		return CommandHistory{}, err
 	}
+	defer historyFile.Close()
 
-	return parseHistory(historyBytes)
+	return parseHistory(historyFile)
 }
