@@ -13,7 +13,7 @@ go install github.com/lupinelab/replay/cmd/replay@latest
 ### Build from source
 ```bash
 git clone https://github.com/lupinelab/replay.git
-cd ./replay/cmd
+cd ./replay/cmd/replay
 go build replay.go
 ```
 
