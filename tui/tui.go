@@ -57,7 +57,6 @@ func (replayTui *replayTui) Run() error {
 	}
 
 	replayTui.populateCommandTable(replayTui.history)
-
 	replayTui.app.SetInputCapture(replayTui.inputHandler())
 	replayTui.app.SetRoot(replayTui.layout, true)
 
@@ -77,7 +76,7 @@ func isCommandSelectInput(event *tcell.EventKey) bool {
 
 func (replayTui *replayTui) inputHandler() func(event *tcell.EventKey) *tcell.EventKey {
 	return func(event *tcell.EventKey) *tcell.EventKey {
-		if event.Key() == tcell.KeyEsc {
+		if event.Key() == tcell.KeyEsc || event.Key() == tcell.KeyCtrlC {
 			replayTui.app.Stop()
 			return nil
 		} else if isCommandSelectInput(event) {
