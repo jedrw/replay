@@ -9,13 +9,13 @@ import (
 )
 
 func TestEventRuneToNumberKey(t *testing.T) {
-	eventKey1 := tcell.NewEventKey(tcell.KeyNUL, 49, tcell.ModNone)
-	eventKey2 := tcell.NewEventKey(tcell.KeyNUL, 57, tcell.ModNone)
+	eventKey1 := tcell.NewEventKey(tcell.KeyF1, 0, tcell.ModNone)
+	eventKey2 := tcell.NewEventKey(tcell.KeyF9, 0, tcell.ModNone)
 
-	if number := eventRuneToNumberKey(eventKey1); number != 1 {
+	if number := fKeyToNumber(eventKey1); number != 1 {
 		t.Errorf("Expected: 1, got: %d", number)
 	}
-	if number := eventRuneToNumberKey(eventKey2); number != 9 {
+	if number := fKeyToNumber(eventKey2); number != 9 {
 		t.Errorf("Expected: 9, got: %d", number)
 	}
 }

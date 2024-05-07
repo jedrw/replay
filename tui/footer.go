@@ -1,6 +1,9 @@
 package tui
 
 import (
+	"fmt"
+	"runtime"
+
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 )
@@ -10,7 +13,16 @@ func NewFooter() *tview.TextView {
 	footer.SetTitle("REPLAY")
 	footer.SetBackgroundColor(tcell.ColorDefault)
 
-	footer.SetText("Navigate <Up|Down>	Select <Enter>	Order <Alt+[1-9]>	Search <ASCII>	Replay <Alt+Enter>")
+	var replayKeyBind string
+	switch runtime.GOOS {
+	case "darwin":
+		replayKeyBind = "Ctrl+r"
+	default:
+		replayKeyBind = "Alt+Enter"
+	}
+
+	keybindText := fmt.Sprintf("Navigate <Up|Down>	Select/Deselect <Enter>	Order <Alt+[F1-F9]>	Search <ASCII>	Replay <%s>", replayKeyBind)
+	footer.SetText(keybindText)
 	footer.SetTextAlign(tview.AlignCenter).SetTextColor(altColour)
 
 	return footer

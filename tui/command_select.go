@@ -30,7 +30,8 @@ func newCommandSelect(replayTui *replayTui) *tview.Table {
 	})
 
 	commandSelect.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
-		if event.Modifiers() == tcell.ModAlt && event.Key() == tcell.KeyEnter {
+		if (event.Modifiers() == tcell.ModAlt && event.Key() == tcell.KeyEnter) ||
+			(event.Key() == tcell.KeyCtrlR) {
 			commands := sortCommands(replayTui.selected)
 			replayTui.app.Stop()
 			replay.Replay(commands)
@@ -40,10 +41,9 @@ func newCommandSelect(replayTui *replayTui) *tview.Table {
 		} else if event.Key() == tcell.KeyEsc {
 			replayTui.app.Stop()
 			return nil
-		} else if number := eventRuneToNumberKey(event); 1 <= number && number <= 9 && event.Modifiers() == tcell.ModAlt {
-			switch eventRuneToNumberKey(event) {
+		} else if isFKey(event) {
+			switch order := fKeyToNumber(event); order {
 			case 1, 2, 3, 4, 5, 6, 7, 8, 9:
-				order := eventRuneToNumberKey(event)
 				// Check for another command with same order
 				for i, selectedCommand := range replayTui.selected {
 					if selectedCommand.order == order {
@@ -90,8 +90,8 @@ func newCommandSelect(replayTui *replayTui) *tview.Table {
 	return commandSelect
 }
 
-func eventRuneToNumberKey(event *tcell.EventKey) int {
-	return int(event.Rune() - '0')
+func fKeyToNumber(event *tcell.EventKey) int {
+	return int(event.Key() - 278)
 }
 
 func isSelected(commandCell *tview.TableCell) bool {

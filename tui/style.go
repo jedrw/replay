@@ -5,7 +5,7 @@ import (
 )
 
 var (
-	altColour       = tcell.ColorSteelBlue
+	altColour       = tcell.ColorBlueViolet
 	selectedStyle   = tcell.StyleDefault.Foreground(tcell.ColorGreen).Background(tcell.ColorBlack)
 	unselectedStyle = tcell.StyleDefault.Foreground(tcell.ColorWhite).Background(tcell.ColorBlack)
 )

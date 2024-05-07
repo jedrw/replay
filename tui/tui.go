@@ -63,11 +63,20 @@ func (replayTui *replayTui) Run() error {
 	return replayTui.app.Run()
 }
 
+func isFKey(event *tcell.EventKey) bool {
+	if 279 <= event.Key() && event.Key() <= 288 {
+		return true
+	}
+
+	return false
+}
+
 func isCommandSelectInput(event *tcell.EventKey) bool {
 	if (event.Modifiers() == tcell.ModAlt && event.Key() == tcell.KeyEnter) ||
-		(event.Key() == tcell.KeyEnter || event.Key() == tcell.KeyUp || event.Key() == tcell.KeyDown || event.Key() == tcell.KeyLeft || event.Key() == tcell.KeyRight) {
+		(event.Key() == tcell.KeyCtrlR) ||
+		(event.Key() == tcell.KeyEnter || event.Key() == tcell.KeyUp || event.Key() == tcell.KeyDown) {
 		return true
-	} else if number := eventRuneToNumberKey(event); 1 <= number && number <= 9 && event.Modifiers() == tcell.ModAlt {
+	} else if isFKey(event) {
 		return true
 	} else {
 		return false
