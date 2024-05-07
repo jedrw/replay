@@ -21,7 +21,7 @@ func NewFooter() *tview.TextView {
 		replayKeyBind = "Alt+Enter"
 	}
 
-	keybindText := fmt.Sprintf("Navigate <Up|Down>	Select/Deselect <Enter>	Order <Alt+[F1-F9]>	Search <ASCII>	Replay <%s>", replayKeyBind)
+	keybindText := fmt.Sprintf("Navigate <Up|Down>	Select/Deselect <Enter>	Order <F[1-9]>	Search <ASCII>	Replay <%s>", replayKeyBind)
 	footer.SetText(keybindText)
 	footer.SetTextAlign(tview.AlignCenter).SetTextColor(altColour)
 
