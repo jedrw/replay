@@ -3,7 +3,12 @@ A shell command composer. Allows commands from your shell history to be composed
 
 ## Installation
 ### From Binary
-Download and install the [latest release](https://github.com/lupinelab/replay/releases/latest).
+Download the [latest release](https://github.com/lupinelab/replay/releases/latest).
+```bash
+mkdir replay
+tar -xvzf <replay-archive-name> -C ./replay/
+cp ./replay/replay ~/.local/bin/
+```
 
 ### From Source
 ```bash
