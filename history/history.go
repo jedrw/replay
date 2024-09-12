@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"path"
+	"strings"
 )
 
 type Command struct {
@@ -35,15 +36,27 @@ func getHistoryFile(path string) (*os.File, error) {
 
 func parseHistory(historyFile io.Reader) (CommandHistory, error) {
 	var commandHistory CommandHistory
-	scanner := bufio.NewScanner(historyFile)
-	for i := 0; scanner.Scan(); i++ {
+	reader := bufio.NewReader(historyFile)
+	i := 0
+	for {
+		line, err := reader.ReadString('\n')
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+
+			return commandHistory, err
+		}
+
 		commandHistory = append(
 			commandHistory,
 			Command{
 				Index:   i,
-				Command: scanner.Text(),
+				Command: strings.TrimRight(line, "\n"),
 			},
 		)
+
+		i++
 	}
 
 	return commandHistory, nil

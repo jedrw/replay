@@ -37,10 +37,10 @@ func TestParseHistory(t *testing.T) {
 
 	for i, command := range commandHistory {
 		if command.Index != expected[i].Index {
-			t.Errorf("\nExpected:\n%+v\nGot:\n%+v", expected[i].Index, command.Index)
+			t.Errorf("\nExpected:\n%+v\nGot:\n%+v\n", expected[i].Index, command.Index)
 		}
 		if command.Command != expected[i].Command {
-			t.Errorf("\nExpected:\n%+v\nGot:\n%+v", expected[i].Command, command.Command)
+			t.Errorf("\nExpected:\n%+v\nGot:\n%+v\n", expected[i].Command, command.Command)
 		}
 	}
 }
