@@ -15,8 +15,8 @@ func newPreview() *tview.TextView {
 }
 
 func (replayTui *replayTui) updatePreview() {
-	commands := make([]command, len(replayTui.selected))
-	copy(commands, replayTui.selected)
+	commands := make([]command, len(replayTui.Selected))
+	copy(commands, replayTui.Selected)
 
 	commandList := sortCommands(commands)
 	var previewText string

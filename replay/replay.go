@@ -30,6 +30,9 @@ func Replay(commands []history.Command) {
 		if err := replayCmd.Wait(); err != nil {
 			if exiterr, ok := err.(*exec.ExitError); ok && exiterr.ExitCode() != 0 {
 				os.Exit(0)
+			} else {
+				fmt.Println(err)
+				os.Exit(1)
 			}
 		}
 	}

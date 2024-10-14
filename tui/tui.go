@@ -10,8 +10,8 @@ import (
 )
 
 type command struct {
-	order   int
-	command history.Command
+	Order   int
+	Command history.Command
 }
 
 type replayTui struct {
@@ -24,7 +24,7 @@ type replayTui struct {
 	preview       *tview.TextView
 
 	history  history.CommandHistory
-	selected []command
+	Selected []command
 }
 
 func NewReplayTui() replayTui {

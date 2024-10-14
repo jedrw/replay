@@ -16,7 +16,7 @@ type Command struct {
 
 type CommandHistory []Command
 
-func GetShell() string {
+func getShell() string {
 	shellBin := os.Getenv("SHELL")
 	return path.Base(shellBin)
 }
@@ -27,11 +27,7 @@ func historyFilePath() string {
 		fmt.Printf("Could not find history file path: %s", err)
 	}
 
-	return path.Join(homedir, fmt.Sprintf(".%s_history", GetShell()))
-}
-
-func getHistoryFile(path string) (*os.File, error) {
-	return os.Open(path)
+	return path.Join(homedir, fmt.Sprintf(".%s_history", getShell()))
 }
 
 func parseHistory(historyFile io.Reader) (CommandHistory, error) {
@@ -63,7 +59,7 @@ func parseHistory(historyFile io.Reader) (CommandHistory, error) {
 }
 
 func GetHistory() (CommandHistory, error) {
-	historyFile, err := getHistoryFile(historyFilePath())
+	historyFile, err := os.Open(historyFilePath())
 	if err != nil {
 		return CommandHistory{}, err
 	}

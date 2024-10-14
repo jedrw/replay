@@ -11,15 +11,15 @@ func sortCommands(commands []command) []history.Command {
 	var orderedCommands []command
 	var remainingCommands []history.Command
 	for _, command := range commands {
-		if command.order != 0 {
+		if command.Order != 0 {
 			orderedCommands = append(orderedCommands, command)
 		} else {
-			remainingCommands = append(remainingCommands, command.command)
+			remainingCommands = append(remainingCommands, command.Command)
 		}
 	}
 
 	slices.SortFunc(orderedCommands, func(a, b command) int {
-		return cmp.Compare(a.order, b.order)
+		return cmp.Compare(a.Order, b.Order)
 	})
 
 	slices.SortFunc(remainingCommands, func(a, b history.Command) int {
@@ -28,7 +28,7 @@ func sortCommands(commands []command) []history.Command {
 
 	var commandList []history.Command
 	for _, command := range orderedCommands {
-		commandList = append(commandList, command.command)
+		commandList = append(commandList, command.Command)
 	}
 
 	return append(commandList, remainingCommands...)

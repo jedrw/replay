@@ -1,7 +1,7 @@
 package tui
 
 import (
-	"fmt"
+	"strconv"
 
 	"github.com/gdamore/tcell/v2"
 	"github.com/lupinelab/replay/history"
@@ -32,7 +32,7 @@ func newCommandSelect(replayTui *replayTui) *tview.Table {
 	commandSelect.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		if (event.Modifiers() == tcell.ModAlt && event.Key() == tcell.KeyEnter) ||
 			(event.Key() == tcell.KeyCtrlR) {
-			commands := sortCommands(replayTui.selected)
+			commands := sortCommands(replayTui.Selected)
 			replayTui.app.Stop()
 			replay.Replay(commands)
 			return nil
@@ -45,14 +45,14 @@ func newCommandSelect(replayTui *replayTui) *tview.Table {
 			switch order := fKeyToNumber(event); order {
 			case 1, 2, 3, 4, 5, 6, 7, 8, 9:
 				// Check for another command with same order
-				for i, selectedCommand := range replayTui.selected {
-					if selectedCommand.order == order {
+				for i, selectedCommand := range replayTui.Selected {
+					if selectedCommand.Order == order {
 						// The command might not be in the commandSelect table so if there has
-						// been a search so it must be removed from the selected list manually
-						replayTui.selected = append(replayTui.selected[:i], replayTui.selected[i+1:]...)
+						// been a search it must be removed from the selected list manually
+						replayTui.Selected = append(replayTui.Selected[:i], replayTui.Selected[i+1:]...)
 						for r := 1; r < commandSelect.GetRowCount(); r++ {
 							commandCell := commandSelect.GetCell(r, COMMANDCOLUMN)
-							if commandCell.Reference.(history.Command).Index == selectedCommand.command.Index {
+							if commandCell.Reference.(history.Command).Index == selectedCommand.Command.Index {
 								orderCell := commandSelect.GetCell(r, ORDERCOLUMN)
 								orderCell.SetText("").SetReference(0)
 								replayTui.deselectCommand(commandCell, orderCell)
@@ -65,13 +65,13 @@ func newCommandSelect(replayTui *replayTui) *tview.Table {
 				row, _ := commandSelect.GetSelection()
 				commandCell := commandSelect.GetCell(row, COMMANDCOLUMN)
 				orderCell := commandSelect.GetCell(row, ORDERCOLUMN)
-				orderCell.SetText(fmt.Sprint(order)).SetReference(order)
+				orderCell.SetText(strconv.Itoa(order)).SetReference(order)
 
 				// Set order on already selected command
 				if isSelected(commandCell) {
-					for i, command := range replayTui.selected {
-						if command.command.Index == commandCell.Reference.(history.Command).Index {
-							replayTui.selected[i].order = order
+					for i, command := range replayTui.Selected {
+						if command.Command.Index == commandCell.Reference.(history.Command).Index {
+							replayTui.Selected[i].Order = order
 							break
 						}
 					}
@@ -99,8 +99,8 @@ func isSelected(commandCell *tview.TableCell) bool {
 }
 
 func (replayTui *replayTui) commandInSelectedList(command history.Command) (bool, *command) {
-	for _, selectedCommand := range replayTui.selected {
-		if selectedCommand.command.Index == command.Index {
+	for _, selectedCommand := range replayTui.Selected {
+		if selectedCommand.Command.Index == command.Index {
 			return true, &selectedCommand
 		}
 	}
@@ -110,11 +110,11 @@ func (replayTui *replayTui) commandInSelectedList(command history.Command) (bool
 
 func (replayTui *replayTui) selectCommand(commandCell, orderCell *tview.TableCell) {
 	commandCell.SetStyle(selectedStyle)
-	replayTui.selected = append(
-		replayTui.selected,
+	replayTui.Selected = append(
+		replayTui.Selected,
 		command{
-			order:   orderCell.Reference.(int),
-			command: commandCell.Reference.(history.Command),
+			Order:   orderCell.Reference.(int),
+			Command: commandCell.Reference.(history.Command),
 		},
 	)
 }
@@ -122,9 +122,9 @@ func (replayTui *replayTui) selectCommand(commandCell, orderCell *tview.TableCel
 func (replayTui *replayTui) deselectCommand(commandCell, orderCell *tview.TableCell) {
 	commandCell.SetStyle(unselectedStyle)
 	orderCell.SetText("").SetReference(0)
-	for i, command := range replayTui.selected {
-		if command.command.Index == commandCell.Reference.(history.Command).Index {
-			replayTui.selected = append(replayTui.selected[:i], replayTui.selected[i+1:]...)
+	for i, command := range replayTui.Selected {
+		if command.Command.Index == commandCell.Reference.(history.Command).Index {
+			replayTui.Selected = append(replayTui.Selected[:i], replayTui.Selected[i+1:]...)
 		}
 	}
 }
@@ -146,7 +146,7 @@ func (replayTui *replayTui) populateCommandTable(commands []history.Command) {
 	}
 
 	for row, command := range commands {
-		commandCell := tview.NewTableCell(fmt.Sprint(command.Command))
+		commandCell := tview.NewTableCell(command.Command)
 		commandCell.SetReference(command)
 		replayTui.commandSelect.SetCell(row+1, COMMANDCOLUMN, commandCell)
 
@@ -154,10 +154,10 @@ func (replayTui *replayTui) populateCommandTable(commands []history.Command) {
 		selected, selectedCommand := replayTui.commandInSelectedList(command)
 		if selected {
 			commandCell.SetStyle(selectedStyle)
-			if selectedCommand.order != 0 {
-				orderCell.SetText(fmt.Sprint(selectedCommand.order))
+			if selectedCommand.Order != 0 {
+				orderCell.SetText(strconv.Itoa(selectedCommand.Order))
 			}
-			orderCell.SetReference(selectedCommand.order)
+			orderCell.SetReference(selectedCommand.Order)
 		}
 
 		orderCell.SetSelectable(false)
