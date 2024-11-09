@@ -5,7 +5,7 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/lupinelab/replay/history"
+	"github.com/jedrw/replay/history"
 )
 
 func newReplayCommand(command history.Command) *exec.Cmd {

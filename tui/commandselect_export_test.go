@@ -1,7 +1,7 @@
 package tui
 
 import (
-	"github.com/lupinelab/replay/history"
+	"github.com/jedrw/replay/history"
 	"github.com/rivo/tview"
 )
 

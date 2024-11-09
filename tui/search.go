@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"github.com/gdamore/tcell/v2"
-	"github.com/lupinelab/replay/history"
+	"github.com/jedrw/replay/history"
 	"github.com/rivo/tview"
 )
 

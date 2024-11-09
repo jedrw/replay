@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/lupinelab/replay/history"
+	"github.com/jedrw/replay/history"
 )
 
 func TestParseHistory(t *testing.T) {

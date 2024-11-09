@@ -4,7 +4,7 @@ import (
 	"cmp"
 	"slices"
 
-	"github.com/lupinelab/replay/history"
+	"github.com/jedrw/replay/history"
 )
 
 func sortCommands(commands []command) []history.Command {

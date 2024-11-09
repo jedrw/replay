@@ -1,4 +1,4 @@
-module github.com/lupinelab/replay
+module github.com/jedrw/replay
 
 go 1.22.2
 
