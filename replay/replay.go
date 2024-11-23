@@ -5,10 +5,10 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/jedrw/replay/history"
+	"github.com/jedrw/replay/command"
 )
 
-func newReplayCommand(command history.Command) *exec.Cmd {
+func newReplayCommand(command command.Command) *exec.Cmd {
 	replayCmd := exec.Command("bash", "-c")
 	replayCmd.Args = append(replayCmd.Args, command.Command)
 	replayCmd.Stdin = os.Stdin
@@ -18,7 +18,7 @@ func newReplayCommand(command history.Command) *exec.Cmd {
 	return replayCmd
 }
 
-func Replay(commands []history.Command) {
+func Replay(commands []command.Command) {
 	for _, command := range commands {
 		replayCmd := newReplayCommand(command)
 		err := replayCmd.Start()

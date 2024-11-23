@@ -8,8 +8,8 @@ commands:
 jobs:
   test:
     working_directory: ~/project/replay
-    docker: 
-      - image: cimg/go:1.22
+    docker:
+      - image: cimg/go:1.23
     steps:
       - checkout:
           path: ~/project
@@ -24,17 +24,17 @@ jobs:
           key: go-mod-v1-{{ checksum "go.sum" }}
           paths:
             - "/go/pkg/mod"
-      - run: 
+      - run:
           name: Run tests
           command: go test ./...
   release:
     working_directory: ~/project/replay
     parameters:
-      args: 
+      args:
         default: ""
         type: string
-    docker: 
-      - image: cimg/go:1.22
+    docker:
+      - image: cimg/go:1.23
     steps:
       - install-goreleaser
       - checkout
@@ -54,7 +54,7 @@ workflows:
       - test:
           filters:
             branches:
-                ignore: /.*/
+              ignore: /.*/
             tags:
               only: /^v\d+\.\d+\.\d+$/
       - release:

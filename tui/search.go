@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"github.com/gdamore/tcell/v2"
-	"github.com/jedrw/replay/history"
+	"github.com/jedrw/replay/command"
 	"github.com/rivo/tview"
 )
 
@@ -22,7 +22,7 @@ func newSearch(replayTui *replayTui) *tview.InputField {
 	search.SetChangedFunc(func(searchText string) {
 		if searchText == "" {
 			replayTui.commandSelect.Clear()
-			replayTui.populateCommandTable(replayTui.history)
+			replayTui.populateCommandTable(replayTui.shellHistory)
 			replayTui.commandSelect.Select(replayTui.commandSelect.GetRowCount()-1, COMMANDCOLUMN)
 			return
 		}
@@ -37,9 +37,9 @@ func newSearch(replayTui *replayTui) *tview.InputField {
 	return search
 }
 
-func (replayTui *replayTui) searchHistory(searchText string) []history.Command {
-	var matches []history.Command
-	for _, command := range replayTui.history {
+func (replayTui *replayTui) searchHistory(searchText string) []command.Command {
+	var matches []command.Command
+	for _, command := range replayTui.shellHistory {
 		if strings.Contains(command.Command, searchText) {
 			matches = append(matches, command)
 		}

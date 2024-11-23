@@ -1,48 +1,74 @@
 package history_test
 
 import (
-	"strings"
+	"reflect"
 	"testing"
 
 	"github.com/jedrw/replay/history"
 )
 
-func TestParseHistory(t *testing.T) {
-	expected := history.CommandHistory{
-		history.Command{
-			Index:   0,
-			Command: "echo 1",
+var testReplayHistory = history.ReplayHistory{
+	history.Replay{
+		"ls -la",
+		"echo pickle",
+	},
+	history.Replay{
+		"echo sausage",
+		"ls -la",
+	},
+	history.Replay{
+		"ls -l",
+		"echo mustard",
+	},
+	history.Replay{
+		"cat dog",
+	},
+}
+
+func TestUpdateReplayHistoryPrependsNewReplay(t *testing.T) {
+	newReplay := history.Replay{
+		"ls -la",
+		"echo cucumber",
+	}
+
+	newHistory := history.UpdateReplayHistory(newReplay, testReplayHistory)
+
+	expectedHistory := append(
+		history.ReplayHistory{newReplay},
+		testReplayHistory...,
+	)
+
+	if !reflect.DeepEqual(newHistory, expectedHistory) {
+		t.Errorf("\nexpected: %+v\n     got: %+v", expectedHistory, newHistory)
+	}
+}
+
+func TestUpdateReplayHistoryRemovesDuplicateReplay(t *testing.T) {
+	newReplay := history.Replay{
+		"cat dog",
+	}
+
+	newHistory := history.UpdateReplayHistory(newReplay, testReplayHistory)
+
+	expectedHistory := history.ReplayHistory{
+		history.Replay{
+			"cat dog",
 		},
-		history.Command{
-			Index:   1,
-			Command: "echo 2",
+		history.Replay{
+			"ls -la",
+			"echo pickle",
 		},
-		history.Command{
-			Index:   2,
-			Command: "echo 3",
+		history.Replay{
+			"echo sausage",
+			"ls -la",
 		},
-		history.Command{
-			Index:   3,
-			Command: "echo 4",
-		},
-		history.Command{
-			Index:   4,
-			Command: "echo 5",
+		history.Replay{
+			"ls -l",
+			"echo mustard",
 		},
 	}
 
-	historyString := strings.NewReader("echo 1\necho 2\necho 3\necho 4\necho 5")
-	commandHistory, err := history.ParseHistory(historyString)
-	if err != nil {
-		t.Error(err)
-	}
-
-	for i, command := range commandHistory {
-		if command.Index != expected[i].Index {
-			t.Errorf("\nExpected:\n%+v\nGot:\n%+v\n", expected[i].Index, command.Index)
-		}
-		if command.Command != expected[i].Command {
-			t.Errorf("\nExpected:\n%+v\nGot:\n%+v\n", expected[i].Command, command.Command)
-		}
+	if !reflect.DeepEqual(newHistory, expectedHistory) {
+		t.Errorf("\nexpected: %+v\n     got: %+v", expectedHistory, newHistory)
 	}
 }

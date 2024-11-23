@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/gdamore/tcell/v2"
-	"github.com/jedrw/replay/history"
+	"github.com/jedrw/replay/command"
 	"github.com/jedrw/replay/tui"
 	"github.com/rivo/tview"
 )
@@ -37,7 +37,7 @@ func TestIsSelectedReturnsFalse(t *testing.T) {
 
 func TestCommandInSelectedListRetunsCommand(t *testing.T) {
 	replayTui := tui.ReplayTui{}
-	cmd := history.Command{
+	cmd := command.Command{
 		Index:   0,
 		Command: "echo foo",
 	}
@@ -52,7 +52,7 @@ func TestCommandInSelectedListRetunsCommand(t *testing.T) {
 		selectedCommand,
 		tui.Command{
 			Order: 0,
-			Command: history.Command{
+			Command: command.Command{
 				Index:   1,
 				Command: "echo bar",
 			},
@@ -75,7 +75,7 @@ func TestCommandInSelectedListRetunsCommand(t *testing.T) {
 
 func TestCommandInSelectedListReturnsNil(t *testing.T) {
 	replayTui := tui.ReplayTui{}
-	cmd := history.Command{
+	cmd := command.Command{
 		Index:   0,
 		Command: "echo foo",
 	}
@@ -84,7 +84,7 @@ func TestCommandInSelectedListReturnsNil(t *testing.T) {
 		replayTui.Selected,
 		tui.Command{
 			Order: 0,
-			Command: history.Command{
+			Command: command.Command{
 				Index:   1,
 				Command: "echo bar",
 			},
@@ -105,7 +105,7 @@ func TestSelectCommand(t *testing.T) {
 	replayTui := tui.ReplayTui{}
 	cmd := tui.Command{
 		Order: 0,
-		Command: history.Command{
+		Command: command.Command{
 			Index:   0,
 			Command: "echo foo",
 		},
@@ -136,7 +136,7 @@ func TestDeselectCommand(t *testing.T) {
 	replayTui := tui.ReplayTui{}
 	cmd := tui.Command{
 		Order: 1,
-		Command: history.Command{
+		Command: command.Command{
 			Index:   0,
 			Command: "echo foo",
 		},

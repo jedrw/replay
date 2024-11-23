@@ -4,12 +4,12 @@ import (
 	"cmp"
 	"slices"
 
-	"github.com/jedrw/replay/history"
+	"github.com/jedrw/replay/command"
 )
 
-func sortCommands(commands []command) []history.Command {
-	var orderedCommands []command
-	var remainingCommands []history.Command
+func sortCommands(commands []tuiCommand) []command.Command {
+	var orderedCommands []tuiCommand
+	var remainingCommands []command.Command
 	for _, command := range commands {
 		if command.Order != 0 {
 			orderedCommands = append(orderedCommands, command)
@@ -18,15 +18,15 @@ func sortCommands(commands []command) []history.Command {
 		}
 	}
 
-	slices.SortFunc(orderedCommands, func(a, b command) int {
+	slices.SortFunc(orderedCommands, func(a, b tuiCommand) int {
 		return cmp.Compare(a.Order, b.Order)
 	})
 
-	slices.SortFunc(remainingCommands, func(a, b history.Command) int {
+	slices.SortFunc(remainingCommands, func(a, b command.Command) int {
 		return cmp.Compare(a.Index, b.Index)
 	})
 
-	var commandList []history.Command
+	var commandList []command.Command
 	for _, command := range orderedCommands {
 		commandList = append(commandList, command.Command)
 	}

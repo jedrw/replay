@@ -4,8 +4,7 @@ import (
 	"strconv"
 
 	"github.com/gdamore/tcell/v2"
-	"github.com/jedrw/replay/history"
-	"github.com/jedrw/replay/replay"
+	"github.com/jedrw/replay/command"
 	"github.com/rivo/tview"
 )
 
@@ -29,63 +28,11 @@ func newCommandSelect(replayTui *replayTui) *tview.Table {
 		replayTui.updatePreview()
 	})
 
-	commandSelect.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
-		if (event.Modifiers() == tcell.ModAlt && event.Key() == tcell.KeyEnter) ||
-			(event.Key() == tcell.KeyCtrlR) {
-			commands := sortCommands(replayTui.Selected)
-			replayTui.app.Stop()
-			replay.Replay(commands)
-			return nil
-		} else if event.Key() == tcell.KeyEnter || event.Key() == tcell.KeyUp || event.Key() == tcell.KeyDown {
+	commandSelect.SetInputCapture(
+		func(event *tcell.EventKey) *tcell.EventKey {
 			return event
-		} else if event.Key() == tcell.KeyEsc {
-			replayTui.app.Stop()
-			return nil
-		} else if isFKey(event) {
-			switch order := fKeyToNumber(event); order {
-			case 1, 2, 3, 4, 5, 6, 7, 8, 9:
-				// Check for another command with same order
-				for i, selectedCommand := range replayTui.Selected {
-					if selectedCommand.Order == order {
-						// The command might not be in the commandSelect table so if there has
-						// been a search it must be removed from the selected list manually
-						replayTui.Selected = append(replayTui.Selected[:i], replayTui.Selected[i+1:]...)
-						for r := 1; r < commandSelect.GetRowCount(); r++ {
-							commandCell := commandSelect.GetCell(r, COMMANDCOLUMN)
-							if commandCell.Reference.(history.Command).Index == selectedCommand.Command.Index {
-								orderCell := commandSelect.GetCell(r, ORDERCOLUMN)
-								orderCell.SetText("").SetReference(0)
-								replayTui.deselectCommand(commandCell, orderCell)
-								break
-							}
-						}
-					}
-				}
-
-				row, _ := commandSelect.GetSelection()
-				commandCell := commandSelect.GetCell(row, COMMANDCOLUMN)
-				orderCell := commandSelect.GetCell(row, ORDERCOLUMN)
-				orderCell.SetText(strconv.Itoa(order)).SetReference(order)
-
-				// Set order on already selected command
-				if isSelected(commandCell) {
-					for i, command := range replayTui.Selected {
-						if command.Command.Index == commandCell.Reference.(history.Command).Index {
-							replayTui.Selected[i].Order = order
-							break
-						}
-					}
-				} else {
-					replayTui.selectCommand(commandCell, orderCell)
-				}
-
-				replayTui.updatePreview()
-			}
-			return nil
-		} else {
-			return event
-		}
-	})
+		},
+	)
 
 	return commandSelect
 }
@@ -98,7 +45,7 @@ func isSelected(commandCell *tview.TableCell) bool {
 	return commandCell.Style == selectedStyle
 }
 
-func (replayTui *replayTui) commandInSelectedList(command history.Command) (bool, *command) {
+func (replayTui *replayTui) commandInSelectedList(command command.Command) (bool, *tuiCommand) {
 	for _, selectedCommand := range replayTui.Selected {
 		if selectedCommand.Command.Index == command.Index {
 			return true, &selectedCommand
@@ -112,9 +59,9 @@ func (replayTui *replayTui) selectCommand(commandCell, orderCell *tview.TableCel
 	commandCell.SetStyle(selectedStyle)
 	replayTui.Selected = append(
 		replayTui.Selected,
-		command{
+		tuiCommand{
 			Order:   orderCell.Reference.(int),
-			Command: commandCell.Reference.(history.Command),
+			Command: commandCell.Reference.(command.Command),
 		},
 	)
 }
@@ -122,8 +69,8 @@ func (replayTui *replayTui) selectCommand(commandCell, orderCell *tview.TableCel
 func (replayTui *replayTui) deselectCommand(commandCell, orderCell *tview.TableCell) {
 	commandCell.SetStyle(unselectedStyle)
 	orderCell.SetText("").SetReference(0)
-	for i, command := range replayTui.Selected {
-		if command.Command.Index == commandCell.Reference.(history.Command).Index {
+	for i, c := range replayTui.Selected {
+		if c.Command.Index == commandCell.Reference.(command.Command).Index {
 			replayTui.Selected = append(replayTui.Selected[:i], replayTui.Selected[i+1:]...)
 		}
 	}
@@ -137,7 +84,7 @@ func (replayTui *replayTui) toggleSelected(commandCell *tview.TableCell, orderCe
 	}
 }
 
-func (replayTui *replayTui) populateCommandTable(commands []history.Command) {
+func (replayTui *replayTui) populateCommandTable(commands []command.Command) {
 	for column, header := range []string{"Order", "Command"} {
 		headerCell := tview.NewTableCell(header).SetSelectable(false)
 		headerCell.SetTextColor(altColour)
