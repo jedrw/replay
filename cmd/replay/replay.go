@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/jedrw/replay/tui"
+	"github.com/jedrw/replay/internal/tui"
 )
 
 func main() {

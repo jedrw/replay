@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/jedrw/replay/command"
+	"github.com/jedrw/replay/internal/command"
 )
 
 func TestParseHistory(t *testing.T) {
@@ -32,7 +32,7 @@ func TestParseHistory(t *testing.T) {
 	}
 
 	historyString := strings.NewReader("echo 1\necho 2\necho 3\necho 4\necho 5")
-	commandHistory, err := command.ParseHistory(historyString)
+	commandHistory, err := command.ParseShellHistory(historyString)
 	if err != nil {
 		t.Error(err)
 	}

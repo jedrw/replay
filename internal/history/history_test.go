@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/jedrw/replay/history"
+	"github.com/jedrw/replay/internal/history"
 )
 
 var testReplayHistory = history.ReplayHistory{

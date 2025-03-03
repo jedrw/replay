@@ -5,7 +5,7 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/jedrw/replay/command"
+	"github.com/jedrw/replay/internal/command"
 )
 
 func newReplayCommand(command command.Command) *exec.Cmd {

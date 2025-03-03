@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"github.com/gdamore/tcell/v2"
-	"github.com/jedrw/replay/command"
-	"github.com/jedrw/replay/tui"
+	"github.com/jedrw/replay/internal/command"
+	"github.com/jedrw/replay/internal/tui"
 	"github.com/rivo/tview"
 )
 

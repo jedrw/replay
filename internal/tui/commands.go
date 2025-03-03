@@ -4,7 +4,7 @@ import (
 	"cmp"
 	"slices"
 
-	"github.com/jedrw/replay/command"
+	"github.com/jedrw/replay/internal/command"
 )
 
 func sortCommands(commands []tuiCommand) []command.Command {

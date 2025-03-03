@@ -1,7 +1,7 @@
 package tui
 
 import (
-	"github.com/jedrw/replay/command"
+	"github.com/jedrw/replay/internal/command"
 	"github.com/rivo/tview"
 )
 

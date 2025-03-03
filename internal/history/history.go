@@ -8,7 +8,7 @@ import (
 	"reflect"
 
 	"github.com/adrg/xdg"
-	"github.com/jedrw/replay/command"
+	"github.com/jedrw/replay/internal/command"
 )
 
 type Replay []string

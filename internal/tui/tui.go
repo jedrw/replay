@@ -6,9 +6,9 @@ import (
 	"strconv"
 
 	"github.com/gdamore/tcell/v2"
-	"github.com/jedrw/replay/command"
-	"github.com/jedrw/replay/history"
-	"github.com/jedrw/replay/replay"
+	"github.com/jedrw/replay/internal/command"
+	"github.com/jedrw/replay/internal/history"
+	"github.com/jedrw/replay/internal/replay"
 	"github.com/rivo/tview"
 )
 
